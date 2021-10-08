@@ -1,0 +1,192 @@
+# 一条 update 语句引起的事故，这回让开发长长记性！！
+
+[Linkoffer](javascript:void(0);) *5月25日*
+
+![Linkoffer](http://mmbiz.qpic.cn/mmbiz_png/EV2DZu90E7qla76LEicucAlhkSclh8HmftUuakO3Ww5hG6FgiceNrldaWcsYTd7WBlUSInVkfFXoppx7sxib3jZPg/0?wx_fmt=png)
+
+**Linkoffer**
+
+提供互联网名企笔试/面试题，面试辅导，简历优化，帮助你更好求职。
+
+21篇原创内容
+
+
+
+公众号
+
+## 一、前言 
+
+最近经常碰到开发误删除误更新数据，这不，他们又给我找了个麻烦，我们来看下整个过程。
+
+## 二、过程
+
+由于开发需要在生产环节中修复数据，需要执行120条SQL语句，需要将数据进行更新
+
+于是开发连上了生产数据库，首先执行了第一条SQL:
+
+```
+update tablename set source_name = "bj1062-北京市朝阳区常营北辰福第"           
+where source_name = "-北京市朝阳区常营北辰福第"
+```
+
+我们仔细看了下，这个SQL，的确没有什么问题，where条件也是正常的，大意就是将这个地址的前面加字符串`bj1062`，是真的没有错误么？是的没有错误。开发执行完成后，结果的确是符合预期。
+
+然后开发执行了剩下的SQL，都是和上面的SQL一样，将地址进行更新。执行完成后，开发懵逼了，发现source_name都变成了0，开发赶紧给我打电话说:
+
+> Harvey，我执行了update，where条件都是对的，set的值也是对的，但是set后的字段全部都变成了0，你赶紧帮我看看，看看能不能恢复数据。
+
+我赶紧登上服务器，查看了这段时间的binlog，发现了大量的update tablename set source_name=0的语句，利用binlog2sql进行了解析。
+
+![图片](https://mmbiz.qpic.cn/mmbiz_png/TNUwKhV0JpRepHxdibRRrpGxWBnPoy9Mibh9p02xeWWOQT7fL5eacZJfk3vZR0JQN9O7GhzuA13CH2qTrHOnZaGQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+赶紧和开发确定了操作的时间点，生成flashback的SQL，进行了数据恢复，同时保留现场证据。
+
+然后对开发执行的SQL进行了check，发现了几条很诡异的SQL：
+
+![图片](https://mmbiz.qpic.cn/mmbiz_png/TNUwKhV0JpRepHxdibRRrpGxWBnPoy9MibQibbVDHyxyGx5KO59pQWYGDXh4QrXKNdZPYITvWHXeGFTu93rVLJsLA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+这几条SQL的引号位置跑到了where 字段名字后面，简化后的SQL变成了：
+
+```
+update tbl_name set str_col="xxx" = "yyy"
+```
+
+那么这个SQL在MySQL他是如何进行语义转化的呢？
+
+可能是下面这样的么？
+
+```
+update tbl_name set (str_col="xxx" )= "yyy"
+```
+
+这样就语法错误了，那么只会是下面这样的形式，
+
+```
+update tbl_name set str_col=("xxx" = "yyy")
+```
+
+而
+
+```
+select "xxx" = "yyy"
+```
+
+的值是0，所以
+
+```
+update tbl_name set str_col="xxx" = "yyy"
+```
+
+等价于
+
+```
+update tbl_name set str_col=0
+```
+
+所以就导致了source_name字段全部更新成了0.
+
+我们再研究下select形式这种语句会怎么样。
+
+```
+mysql [localhost] {msandbox} (test) > select id,str_col from tbl_name where str_col="xxx" = "yyy";
++----+---------+
+| id | str_col |
++----+---------+
+|  1 | aaa     |
+|  2 | aaa     |
+|  3 | aaa     |
+|  4 | aaa     |
++----+---------+
+```
+
+我们发现，这个SQL将str_col='aaa'的记录也查找出来了，为什么呢？
+
+```
+mysql [localhost] {msandbox} (test) > warnings
+Show warnings enabled.
+mysql [localhost] {msandbox} (test) > explain extended select id,str_col from tbl_name where str_col="xxx" = "yyy"\G
+*************************** 1. row ***************************
+           id: 1
+  select_type: SIMPLE
+        table: tbl_name
+         type: index
+possible_keys: NULL
+          key: idx_str
+      key_len: 33
+          ref: NULL
+         rows: 4
+     filtered: 100.00
+        Extra: Using where; Using index
+1 row in set, 1 warning (0.00 sec)
+
+Note (Code 1003): /* select#1 */ select `test`.`tbl_name`.`id` AS `id`,`test`.`tbl_name`.`str_col` AS `str_col` from `test`.`tbl_name` where ((`test`.`tbl_name`.`str_col` = 'xxx') = 'yyy')
+```
+
+这里他把where条件转化成了
+
+```
+((`test`.`tbl_name`.`str_col` = 'xxx') = 'yyy')
+```
+
+这个条件的首先判断str_col 和'xxx'是否相等，如果相等，那么里面括号的值为1，如果不相等，就是0 然后0或者1再和和'yyy'进行判断， 由于等号一边是int，另外一边是字符串，两边都转化为float进行比较，可以看我之前的一篇文章MySQL中隐式转换导致的查询结果错误案例分析'yyy'转化为浮点型为0，0和0比较恒等于1。
+
+```
+mysql [localhost] {msandbox} (test) > select 'yyy'+0.0;
++-----------+
+| 'yyy'+0.0 |
++-----------+
+|         0 |
++-----------+
+
+1 row in set, 1 warning (0.00 sec)
+
+mysql [localhost] {msandbox} (test) > select 0=0;
++-----+
+| 0=0 |
++-----+
+|   1 |
++-----+
+1 row in set (0.00 sec)
+```
+
+这样导致结果恒成立，也就是select语句等价于以下SQL
+
+```
+ select id,str_col from tbl_name where 1=1;
+```
+
+将查询出所有的记录。
+
+## 三、小结
+
+在写SQL的过程中，一定要小心引号的位置是否正确，有时候引号位置错误，SQL依然是正常的，但是却会导致执行结果全部错误。
+
+在执行前必须在测试环境执行测试，结合IDE的语法高亮发现相应的问题。
+
+作者：Harvey
+
+来源：https://www.fordba.com/mysql-double-quotation-marks-accident.html
+
+阅读 502
+
+分享收藏
+
+赞6在看4
+
+写下你的留言
+
+**精选留言**
+
+- ![img](http://wx.qlogo.cn/mmopen/ziazDm3Mtxw5PWhR3ZZHYl5UfKYqaMjAtaGysy3jcO0oxPpricbBDguZqia8peVxkBaAhXhEia86icKwicq8iazhF7KKDpIStn5ETNJ/96)
+
+  我是一个动词
+
+  
+
+  像这种不先执行一条看看么？习惯问题
+
+已无更多数据
+
+
+
+：，。视频小程序赞，轻点两下取消赞在看，轻点两下取消在看

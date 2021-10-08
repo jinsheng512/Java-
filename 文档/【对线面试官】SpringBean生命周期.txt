@@ -1,0 +1,165 @@
+# 【对线面试官】SpringBean生命周期
+
+原创 Java3y [对线面试官](javascript:void(0);) *2月9日*
+
+收录于话题#对线面试官38个内容
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkRbvTJKkqsTRFd02VpicckcFibv0o21JGVt8qRbYBV3Y6CM2VXO1nibX9A/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkkEEIUwGommGTVHExpElwM2jFicW858gSVVNzdibR1JH8sYTlxJm45ZAQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkHcgNp71IejTKK8MyT0eN21r4icdztjx8f6LzXicqIOViabl91lAg6mN8g/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hk8I0NoHzsSgRnv4BoyCXy71vZfrt1yR6ibiaibYibQC35VXlCsYIjfvcicGQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hk8mZSicqace5fp9yUtgGqBBxbeaxuNUe3ZTghZ9CvJCVDMGS1LRG6EKA/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkiaA6DlduOsVfFq35kFgyvH7neIicianJjIK7nnDkAfyGa0mktgVRueAtg/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkmeuicl8Gt6GUaAgCiaP1ecXjAriaIvXhSFYKCtgqhUr8daN7utSpVaIKg/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkxmf65ibB1LTjYnYCXhv9XH4VzAViaj8dgI8Y0anc9SPcNVBNm9zxLbxQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkEiaRV8kolSicPS4zgShjkkXOT5mwREeZ3Iu1ZxSQZ8lVrXzhScl1hs6A/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hk6iaJslh6YYd23miaM8UdOwnq97tzBTsBe4aBhK6AvZaTOTGhNp2ic4a5Q/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkxbz822VcTc95wWX0NXTfoMYkAOlcHyw4VEg03ic6AibgQics9icX7C2ALg/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkHQ3alYWUnsjvWW0aKcH3MV5RRVkQCTCeaEhoTz2FYd9g8Iq8l3Jtlg/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkX2vmsibEHga61x1oicrwmzIjcZodM5iaTZzSGL2wOHQt0FIBQpdibxiclDg/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkOIdBAvtgaXn3tLTR8Sc91ibEEsvIY6AiaeM4xDLudXicibnxzbUQ9HVGWQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hk5v2hWicuAT68pm7l4T8ooknPicpicKEF0auK3LwMKDCMOUSGBwpdAFo9Q/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkm8xCriaVJxy3B2LLoTS54hiaH2nfGUtroXexHrnbFUBVGibrND77kDPyA/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkYbCnicu35PX3aCfaEKCCNme9n9mz1ubgDdQd58ibiaIcZVAyjwuPPgl2A/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkAoljicGnlgAtNrS9lVicE3fN5EqZdDicFxvVSmicuyGA3Wvibfib2D3qml2A/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkuF5ibvBW0bqlr8TBsJVFhztYKZQ01QCsTDhWsbLYOfotZQ86YvPFaWw/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkWBcAibJWXnekcKh7ESf7MfXAqLoy6aPEU80U5AsmSucfHdcn00rhX0g/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkK9rvE3RJrVAu4WXRYjVsexgUEO1BlgpGx2TrOXITEpjC03njZMApfw/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkGfwu4dhA2zaca5s6uHeSatJVBSYjicFrhJkQtkzicdMdu1ibIhziaPv4sQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkZeaELttgkxciaTdfuPCJ7UvdHyv0DYkiavw5icDeQQQE0ibodgYqquWthw/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkOC0HyCIL9dYlibXoA0MANb9JC4L9MYz12TBbguVgrqicqz1tnrZ3LLVQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkl1icrdDuENpd4ibBAb31jR0Bx4NOwUguCXcbqCBdzguG0WGvVlXWyycw/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkrkh6ArSbiahfwMnJ5oqo8uj5jS53icpzN7sF6iaK6GFZFW5qz0Mia6mHPQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+关键源码方法（强烈建议自己去撸一遍）
+
+- `org.springframework.context.support.AbstractApplicationContext#refresh`(入口)
+- `org.springframework.context.support.AbstractApplicationContext#finishBeanFactoryInitialization`(初始化单例对象入口)
+- `org.springframework.beans.factory.config.ConfigurableListableBeanFactory#preInstantiateSingletons`(初始化单例对象入口)
+- `org.springframework.beans.factory.support.AbstractBeanFactory#getBean(java.lang.String)`（万恶之源，获取并创建Bean的入口）
+- `org.springframework.beans.factory.support.AbstractBeanFactory#doGetBean`（实际的获取并创建Bean的实现）
+- `org.springframework.beans.factory.support.DefaultSingletonBeanRegistry#getSingleton(java.lang.String)`（从缓存中尝试获取）
+- `org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#createBean(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Object[])`（实例化Bean）
+- `org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#doCreateBean`（实例化Bean具体实现）
+- `org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#createBeanInstance`（具体实例化过程）
+- `org.springframework.beans.factory.support.DefaultSingletonBeanRegistry#addSingletonFactory`（将实例化后的Bean添加到三级缓存）
+- `org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#populateBean`（实例化后属性注入）
+- `org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#initializeBean(java.lang.String, java.lang.Object, org.springframework.beans.factory.support.RootBeanDefinition)`（初始化入口）
+
+去网上看博客的时候，找到了几张比较好的图，这里贴下方便大家理解吧~
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkOPpwqlHXAl7CTyPLPiaPYAxjb4JHQPfVNJFrooMayWaVPHgv1xM5FFg/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkdialmk34DqaTCkSqBiapLmolicenhffWWNpugytCPtfR99Biaq9OmuJN5g/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hkXvdv7hMHciagyem1va9CFXAyia4z7miazgiavNmYP9z33CkbTo0nyACGtA/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+来源：https://www.jianshu.com/p/6c359768b1dc
+
+\- END -
+
+![对线面试官](http://mmbiz.qpic.cn/mmbiz_png/E44aHibktsKbNnU5S5B6m5yVtNbmfEUsMmf4eqOBEsXzMILa9eAZvBR4mntYwkkp59nicicN1soBWsduGrxLFVzWQ/0?wx_fmt=png)
+
+**对线面试官**
+
+连载「讲人话」Java面试系列
+
+39篇原创内容
+
+
+
+公众号
+
+
+
+**我把Spring AOP和IOC的知识点都整理成思维导图了**
+
+![图片](https://mmbiz.qpic.cn/mmbiz_png/E44aHibktsKYjv1qvlLOcgOnUdicwIy9k82ON0v63grEbCOibNU0bxntSQ3I1iaxMepzeqqmnTyvnmWV6JaUicCWibrQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+**文章以纯面试的角度去讲解，所以有很多的细节是未铺垫的。**
+
+鉴于很多同学反馈没看懂【**对线面试官**】系列，基础相关的知识我确实写过文章讲解过啦，但有的同学就是不爱去翻。
+
+为了让大家有更好的体验，我把已经整理好对应的**Spring电子书**和**思维导图**了
+
+我把这些**上传到网盘**，你们有需要直接下载就好了。
+
+做到这份上了，**不会还想白嫖吧**？**点赞和****转发又不用钱**。
+
+**每当有人加我微信告诉我说**：3y太高产啦，3y写得太好啦
+
+我的手就停不下来，周末连着写。自从写了这个系列以后，周末不玩游戏不看电影了
+
+![图片](https://mmbiz.qpic.cn/mmbiz_jpg/E44aHibktsKY4TrzFA3qC7iaIwcmI2y4hk53QXX6hicW0rXC7jflTsHWOs2mgAurQoWQ19Xh3hyVSE7If6g5VM5icw/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+**
+****怎样偷偷努力 惊艳所有人？**
+
+![Java3y](http://mmbiz.qpic.cn/mmbiz_png/2BGWl1qPxib3e84AiclMBicACMJxpjDVM10XVsnqOOAvRQkQniankEcuxGJT2OuGibYbfl7TR5T3fMZbYAmI00nkYRw/0?wx_fmt=png)
+
+**Java3y**
+
+《对线面试官》系列唯一作者
+
+423篇原创内容
+
+
+
+公众号
+
+点击小卡片关注【**Java3y**】
+
+关注后回复「**888**」还可获取网盘地址哟！
+
+![作者](https://mmbiz.qlogo.cn/mmbiz_jpg/Je14quPicydGk6TIcjJNTiaaJCDjzB5ibPmrj7XcPiaoJs1eRHBS1ryiaTloibpBBvxpUBxsib3X7moSAbYPdlNNia2VWQ/0?wx_fmt=jpeg)
+
+Java3y
+
+面试真好玩😭
+
+![赞赏二维码](https://mp.weixin.qq.com/s?__biz=MzU4NzA3MTc5Mg==&mid=2247484187&idx=1&sn=8f831c40dca9b2a57fdfbd051e4eab44&chksm=fdf0eb44ca87625253ea831471110860d3f27e04488b2748ba90ad442b079aca3d6b95d31bbe&token=1998524575&lang=zh_CN&scene=21&key=0ed2c29d1f549ca1872513193cd1b7e0a7d0a90f1fc082be82a84d6fbbe6cfa70bccc76ee4b28b115ab2064b62af9ee9ddee673b37bba4052c2054b052a874a45348f8e2ef8615e77c200ecbfdf025ea88bb59f2b6f493acdba44279c01326099160bf1648ca139ce321877bf43c07f359066af39cb4f63ba49b54c16f378ee3&ascene=0&uin=MTI3NzE3MDgw&devicetype=Windows+10+x64&version=63030532&exportkey=A82ne7E7KPyGNiTIK6UOmks%3D&pass_ticket=OSOLpDru964tHbIzHAwYBONnc7xxyEwDXguY%2B%2FJZPiMj%2ByRdZOGw505ndSYOBL%2FJ&wx_header=0&fontgear=2)[喜欢作者](https://mp.weixin.qq.com/s?__biz=MzU4NzA3MTc5Mg==&mid=2247484187&idx=1&sn=8f831c40dca9b2a57fdfbd051e4eab44&chksm=fdf0eb44ca87625253ea831471110860d3f27e04488b2748ba90ad442b079aca3d6b95d31bbe&token=1998524575&lang=zh_CN&scene=21&key=0ed2c29d1f549ca1872513193cd1b7e0a7d0a90f1fc082be82a84d6fbbe6cfa70bccc76ee4b28b115ab2064b62af9ee9ddee673b37bba4052c2054b052a874a45348f8e2ef8615e77c200ecbfdf025ea88bb59f2b6f493acdba44279c01326099160bf1648ca139ce321877bf43c07f359066af39cb4f63ba49b54c16f378ee3&ascene=0&uin=MTI3NzE3MDgw&devicetype=Windows+10+x64&version=63030532&exportkey=A82ne7E7KPyGNiTIK6UOmks%3D&pass_ticket=OSOLpDru964tHbIzHAwYBONnc7xxyEwDXguY%2B%2FJZPiMj%2ByRdZOGw505ndSYOBL%2FJ&wx_header=0&fontgear=2##)
+
+[9](javascript:;) 人喜欢
+
+![img](http://wx.qlogo.cn/mmhead/UyWCTdebicYaRReLbYssznJm6qJU5qn5kmk0RdniaVqwo/132)![img](http://wx.qlogo.cn/mmhead/ZqDaDiccbgkgCwnfGbFXjlKv6j2mColkP6k47EicxMGticFQlcT6FZjTA/132)![img](http://wx.qlogo.cn/mmhead/22YD2oBcVUbHx3ibvb8Dic6wN68aCqOiciayPvBaQw0fEad4kYKBfmqdvg/132)![img](http://wx.qlogo.cn/mmhead/Q3auHgzwzM4A7CABkryDexUWmX2B5nvlxyhx6dnicIugmxZbClLibjSA/132)![img](http://wx.qlogo.cn/mmhead/wzJhLVPsrd0LCTia9C4YYIicA2NzmflKzGEgGd46ov1CQlCyibq5icbLDg/132)![img](http://wx.qlogo.cn/mmhead/Q3auHgzwzM6S9eOJFx8648tNYYfxWIPEticnaGzPQJMcs7Zic8vibEjBQ/132)![img](http://wx.qlogo.cn/mmhead/CttmTaYSYkRxc2Xa0gN2CAp0ITQGOpLHeG9m6JxW1lehyUoRL2HEiag/132)![img](http://wx.qlogo.cn/mmhead/Q3auHgzwzM7jDicN1Ihia3mVWFnicGKcbQyQBbUKcL1JrrLxhSGJmNH2Q/132)![img](http://wx.qlogo.cn/mmhead/22YD2oBcVUYfHjweYwbplcYL6VwqrQdbKm3EYkJ9exJ11ibvjRM3m4w/132)
+
+收录于话题 #对线面试官
+
+38个
+
+上一篇【对线面试官】Redis基础下一篇【对线面试官】Spring基础
+
+[阅读原文](https://mp.weixin.qq.com/s?__biz=MzU4NzA3MTc5Mg==&mid=2247484187&idx=1&sn=8f831c40dca9b2a57fdfbd051e4eab44&chksm=fdf0eb44ca87625253ea831471110860d3f27e04488b2748ba90ad442b079aca3d6b95d31bbe&token=1998524575&lang=zh_CN&scene=21&key=0ed2c29d1f549ca1872513193cd1b7e0a7d0a90f1fc082be82a84d6fbbe6cfa70bccc76ee4b28b115ab2064b62af9ee9ddee673b37bba4052c2054b052a874a45348f8e2ef8615e77c200ecbfdf025ea88bb59f2b6f493acdba44279c01326099160bf1648ca139ce321877bf43c07f359066af39cb4f63ba49b54c16f378ee3&ascene=0&uin=MTI3NzE3MDgw&devicetype=Windows+10+x64&version=63030532&exportkey=A82ne7E7KPyGNiTIK6UOmks%3D&pass_ticket=OSOLpDru964tHbIzHAwYBONnc7xxyEwDXguY%2B%2FJZPiMj%2ByRdZOGw505ndSYOBL%2FJ&wx_header=0&fontgear=2##)
+
+阅读 8380
+
+分享收藏
+
+赞166在看33
+
+：，。视频小程序赞，轻点两下取消赞在看，轻点两下取消在看
